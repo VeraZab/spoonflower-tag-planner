@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography, Sheet, Tooltip } from "@mui/joy";
+import { Box, Button, Typography, Sheet, Tooltip, useTheme } from "@mui/joy";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -9,6 +9,7 @@ import "./App.css";
 import { Check } from "@mui/icons-material";
 
 function App() {
+  const theme = useTheme();
   const initialKeywords = new Array(13).fill("");
   const [keywords, setKeywords] = useState<string[]>(initialKeywords);
   const [finalKeywordString, setFinalKeywordString] = useState("");
@@ -33,11 +34,16 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Typography level="h1" sx={{ m: 3, mb: 4 }}>
+        <Typography level="h2" sx={{ m: 3, mb: 4, textAlign: "center" }}>
           Spoonflower Keyword Planner
         </Typography>
-        <Box sx={{ display: "flex" }}>
-          <Box sx={{ mr: 6 }}>
+        <Box
+          sx={{
+            display: "flex",
+            [theme.breakpoints.down("md")]: { flexDirection: "column" },
+          }}
+        >
+          <Box sx={{ mr: 6, [theme.breakpoints.down("md")]: { mr: 0 } }}>
             {keywords.slice(0, 7).map((k, i) => (
               <Keyword
                 key={i}
@@ -88,11 +94,12 @@ function App() {
             sx={(theme) => ({
               display: "flex",
               alignItems: "center",
-              width: "100%",
+              width: "95%",
               background: theme.palette.neutral[200],
               padding: 2,
               borderRadius: "4px",
               justifyContent: "space-between",
+              [theme.breakpoints.down("md")]: { width: "90%", mb: 6 },
             })}
           >
             <Box sx={{ mr: 1 }}>{finalKeywordString}</Box>
