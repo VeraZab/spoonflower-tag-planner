@@ -1,12 +1,18 @@
-import { useState } from "react";
-import { Box, Button, Typography, Sheet, Tooltip, useTheme } from "@mui/joy";
+import "./App.css";
+import { useState, ChangeEvent } from "react";
+import {
+  Box,
+  Button,
+  Typography,
+  Sheet,
+  Tooltip,
+  useTheme,
+  Textarea,
+} from "@mui/joy";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
 import { Keyword } from "./Keyword.tsx";
-
-import "./App.css";
-import { Check } from "@mui/icons-material";
 
 function App() {
   const theme = useTheme();
@@ -14,6 +20,7 @@ function App() {
   const [keywords, setKeywords] = useState<string[]>(initialKeywords);
   const [finalKeywordString, setFinalKeywordString] = useState("");
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [wordSoup, setWordSoup] = useState("");
 
   const tempKeywordString = keywords.filter((k) => k.trim() !== "").join(", ");
   return (
@@ -35,35 +42,53 @@ function App() {
         }}
       >
         <Typography level="h2" sx={{ m: 3, mb: 4, textAlign: "center" }}>
-          Spoonflower Keyword Planner
+          Spoonflower Tags Planner
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            [theme.breakpoints.down("md")]: { flexDirection: "column" },
-          }}
-        >
-          <Box sx={{ mr: 6, [theme.breakpoints.down("md")]: { mr: 0 } }}>
-            {keywords.slice(0, 7).map((k, i) => (
-              <Keyword
-                key={i}
-                keyword={k}
-                keywords={keywords}
-                keywordIndex={i}
-                setKeywords={setKeywords}
-              />
-            ))}
-          </Box>
-          <Box>
-            {keywords.slice(7).map((k, i) => (
-              <Keyword
-                key={i + 6}
-                keyword={k}
-                keywords={keywords}
-                keywordIndex={i + 7}
-                setKeywords={setKeywords}
-              />
-            ))}
+        <Box sx={{ width: "95%", m: 2 }}>
+          <Typography variant="h3" sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
+            Paste your keyword ideas soup here
+          </Typography>
+          <Textarea
+            value={wordSoup}
+            onChange={(e: ChangeEvent<HTMLAreaElement>) => {
+              const value = e?.target.value;
+              setWordSoup(value);
+            }}
+          />
+          <Box></Box>
+        </Box>
+        <Box>
+          <Typography variant="h3" sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
+            Plan your optimized tags here
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              [theme.breakpoints.down("md")]: { flexDirection: "column" },
+            }}
+          >
+            <Box sx={{ mr: 6, [theme.breakpoints.down("md")]: { mr: 0 } }}>
+              {keywords.slice(0, 7).map((k, i) => (
+                <Keyword
+                  key={i}
+                  keyword={k}
+                  keywords={keywords}
+                  keywordIndex={i}
+                  setKeywords={setKeywords}
+                />
+              ))}
+            </Box>
+            <Box>
+              {keywords.slice(7).map((k, i) => (
+                <Keyword
+                  key={i + 6}
+                  keyword={k}
+                  keywords={keywords}
+                  keywordIndex={i + 7}
+                  setKeywords={setKeywords}
+                />
+              ))}
+            </Box>
           </Box>
         </Box>
         <Box sx={{ m: 4 }}>
