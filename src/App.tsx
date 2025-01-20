@@ -123,7 +123,7 @@ function App() {
           </Box>
         </Box>
         <Box>
-          <Typography variant="h3" sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
+          <Typography sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
             Plan your optimized tags here
           </Typography>
           <Box
