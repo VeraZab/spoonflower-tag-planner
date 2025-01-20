@@ -32,7 +32,6 @@ export function CharBucket({
       }}
     >
       <Typography
-        level="h6"
         sx={{
           display: "flex",
           height: "20%",
