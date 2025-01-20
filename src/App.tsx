@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, FocusEvent, useCallback } from "react";
 import {
   Box,
   Button,
@@ -12,17 +12,50 @@ import {
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
-import { Keyword } from "./Keyword.tsx";
+import { Tag } from "./Tag.tsx";
+import { CharBucket } from "./CharBucket.tsx";
+
+const createBuckets = (text: string) => {
+  const words = text
+    .replace(/,/g, " ")
+    .split(/\s+/)
+    .filter((word) => word.trim() !== "");
+
+  const buckets: Record<number, string[]> = {};
+  words.forEach((word) => {
+    const length = word.length;
+    if (!buckets[length]) {
+      buckets[length] = [];
+    }
+    buckets[length].push(word);
+  });
+  return buckets;
+};
 
 function App() {
   const theme = useTheme();
   const initialKeywords = new Array(13).fill("");
-  const [keywords, setKeywords] = useState<string[]>(initialKeywords);
+  const [currentTags, setCurrentTags] = useState<string[]>(initialKeywords);
   const [finalKeywordString, setFinalKeywordString] = useState("");
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [wordSoup, setWordSoup] = useState("");
+  const [charBuckets, setCharBuckets] = useState<Record<number, string[]>>([]);
 
-  const tempKeywordString = keywords.filter((k) => k.trim() !== "").join(", ");
+  const tempKeywordString = currentTags
+    .filter((k) => k.trim() !== "")
+    .map((w) => w.trim())
+    .join(", ");
+
+  const updateTags = useCallback(
+    (e: ChangeEvent<HTMLInputElement>, tagIndex: number) => {
+      const value = e?.target.value;
+      const newTags = [...currentTags];
+      newTags[tagIndex] = value;
+      setCurrentTags(newTags);
+    },
+    [currentTags]
+  );
+
   return (
     <Box
       sx={{
@@ -42,20 +75,50 @@ function App() {
         }}
       >
         <Typography level="h2" sx={{ m: 3, mb: 4, textAlign: "center" }}>
-          Spoonflower Tags Planner
+          Spoonflower Tag Planner
         </Typography>
         <Box sx={{ width: "95%", m: 2 }}>
-          <Typography variant="h3" sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
-            Paste your keyword ideas soup here
-          </Typography>
           <Textarea
+            sx={{ minHeight: "70px" }}
+            placeholder="Paste your keyword ideas soup here"
             value={wordSoup}
-            onChange={(e: ChangeEvent<HTMLAreaElement>) => {
-              const value = e?.target.value;
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+              const value = e?.target.value.toLowerCase();
               setWordSoup(value);
             }}
+            onBlur={(e: FocusEvent<HTMLTextAreaElement>) => {
+              const newBuckets = createBuckets(e.target.value);
+              setCharBuckets(newBuckets);
+            }}
+            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+              const isEnter =
+                e.key === "Enter" || // Logical Enter key
+                e.code === "Enter" || // Physical Enter key
+                e.code === "NumpadEnter" || // Enter key on the numeric keypad
+                e.keyCode === 13; // Older browser fallback
+
+              if (isEnter) {
+                e.preventDefault(); // Prevent the default Enter behavior
+                e.currentTarget.blur(); // Blur the Textarea
+              }
+            }}
           />
-          <Box></Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              width: "95%",
+              alignItems: "center",
+            }}
+          >
+            {Object.entries(charBuckets).map(([length, words]) => (
+              <CharBucket
+                length={length}
+                words={words}
+                currentTags={currentTags}
+              />
+            ))}
+          </Box>
         </Box>
         <Box>
           <Typography variant="h3" sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
@@ -68,24 +131,17 @@ function App() {
             }}
           >
             <Box sx={{ mr: 6, [theme.breakpoints.down("md")]: { mr: 0 } }}>
-              {keywords.slice(0, 7).map((k, i) => (
-                <Keyword
-                  key={i}
-                  keyword={k}
-                  keywords={keywords}
-                  keywordIndex={i}
-                  setKeywords={setKeywords}
-                />
+              {currentTags.slice(0, 7).map((k, i) => (
+                <Tag key={i} tag={k} tagIndex={i} onChange={updateTags} />
               ))}
             </Box>
-            <Box>
-              {keywords.slice(7).map((k, i) => (
-                <Keyword
+            <Box sx={{ [theme.breakpoints.down("md")]: { mt: -1 } }}>
+              {currentTags.slice(7).map((k, i) => (
+                <Tag
                   key={i + 6}
-                  keyword={k}
-                  keywords={keywords}
-                  keywordIndex={i + 7}
-                  setKeywords={setKeywords}
+                  tag={k}
+                  tagIndex={i + 7}
+                  onChange={updateTags}
                 />
               ))}
             </Box>
@@ -96,15 +152,17 @@ function App() {
             variant="outlined"
             sx={{ mr: 2 }}
             onClick={() => {
-              setKeywords([...initialKeywords]);
+              setCurrentTags([...initialKeywords]);
               setFinalKeywordString("");
+              setCharBuckets({});
+              setWordSoup("");
             }}
           >
             Reset
           </Button>
           <Button
             disabled={
-              !keywords.some((k) => Boolean(k)) &&
+              !currentTags.some((k) => Boolean(k)) &&
               tempKeywordString.length <= 284
             }
             onClick={() => {
