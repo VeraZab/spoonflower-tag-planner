@@ -70,6 +70,7 @@ function App() {
       <Box
         sx={{
           width: "900px",
+          [theme.breakpoints.down("md")]: { width: "100%" },
           height: "100%",
           display: "flex",
           flexDirection: "column",
