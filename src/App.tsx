@@ -63,6 +63,8 @@ function App() {
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
+        p: 3,
+        pt: 0,
       }}
     >
       <Box
@@ -80,7 +82,7 @@ function App() {
         <Box sx={{ width: "95%", m: 2 }}>
           <Textarea
             sx={{ minHeight: "70px" }}
-            placeholder="Paste your keyword ideas soup here"
+            placeholder="Paste your keyword ideas here"
             value={wordSoup}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               const value = e?.target.value.toLowerCase();
