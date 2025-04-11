@@ -106,7 +106,7 @@ export function TabsPanel({
         </Tabs>
       </Box>
 
-      <CustomTab value={value} index={0} sx={{ p: 0 }}>
+      <CustomTab value={value} index={0}>
         <TextField
           multiline
           fullWidth
@@ -149,7 +149,7 @@ export function TabsPanel({
             const value = e.target.value.toLowerCase();
             setTempKeywordsToRework(value);
           }}
-          onBlur={(e: FocusEvent<HTMLTextAreaElement>) => {
+          onBlur={() => {
             setTempKeywordsToRework("");
             setTagsToRework(tempKeywordsToRework);
           }}
