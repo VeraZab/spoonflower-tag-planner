@@ -43,7 +43,7 @@ function App() {
 
   useEffect(() => {
     if (tagsToRework) {
-      const split = tagsToRework.split(",");
+      const split = tagsToRework.split(",").map((w) => w.trim());
       setCurrentTags(split);
     }
   }, [tagsToRework]);
