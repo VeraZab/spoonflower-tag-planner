@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { Box, Input } from "@mui/joy";
+import { Box, TextField } from "@mui/material";
 
 export function Tag({
   tag,
@@ -19,15 +19,15 @@ export function Tag({
       }}
     >
       <Box sx={{ fontWeight: "bold", width: "30px" }}>#{tagIndex + 1}</Box>
-      <Input
-        sx={{ maxWidth: "250px", width: "250px", ml: 1, mr: 1 }}
-        variant="soft"
+      <TextField
+        variant="outlined"
+        size="small"
+        sx={{ maxWidth: "250px", width: "250px", mx: 1 }}
         onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e, tagIndex)}
-        color={tag.length <= 20 ? "success" : "danger"}
         value={tag}
-      >
-        {tag}
-      </Input>
+        color={tag.length <= 20 ? "success" : "error"}
+        inputProps={{ maxLength: 30 }}
+      />
       <Box>{20 - tag.length} chars left</Box>
     </Box>
   );

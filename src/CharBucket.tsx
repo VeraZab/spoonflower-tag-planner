@@ -1,4 +1,4 @@
-import { Box, Sheet, Typography, useTheme } from "@mui/joy";
+import { Box, Typography, useTheme, Paper } from "@mui/material";
 
 const isWordInTags = (word: string, currentTags: string[]): boolean =>
   currentTags.some((sentence) => sentence.split(/\s+/).includes(word));
@@ -19,50 +19,49 @@ export function CharBucket({
   if (!uniqueWords.length) return null;
 
   return (
-    <Sheet
+    <Paper
+      elevation={1}
       sx={{
-        backgroundColor: theme.palette.neutral[100],
+        backgroundColor: theme.palette.grey[100],
         height: "160px",
         width: "150px",
         borderRadius: "4px",
         mt: 1,
         mr: 1,
-        padding: 1,
+        p: 1,
         overflow: "hidden",
       }}
     >
-      <Typography
+      <Box
         sx={{
           display: "flex",
           height: "20%",
-          alignContent: "center",
+          alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <Box sx={{ fontWeight: "bold" }}>{length} chars</Box>
-        <Box> ({uniqueWords.length})</Box>
-      </Typography>
+        <Typography sx={{ fontWeight: "bold" }}>{length} chars</Typography>
+        <Typography>({uniqueWords.length})</Typography>
+      </Box>
       <Box
         sx={{
-          overflow: "scroll",
+          overflow: "auto",
           height: "80%",
         }}
       >
-        {uniqueWords.map((word, i) => {
-          return (
-            <Box
-              key={i}
-              sx={{
-                textDecoration: isWordInTags(word, currentTags)
-                  ? "line-through"
-                  : "none",
-              }}
-            >
-              {word}
-            </Box>
-          );
-        })}
+        {uniqueWords.map((word, i) => (
+          <Typography
+            key={i}
+            sx={{
+              textDecoration: isWordInTags(word, currentTags)
+                ? "line-through"
+                : "none",
+            }}
+          >
+            {word}
+          </Typography>
+        ))}
       </Box>
-    </Sheet>
+    </Paper>
   );
 }

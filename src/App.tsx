@@ -1,36 +1,20 @@
 import "./App.css";
-import { useState, ChangeEvent, FocusEvent, useCallback } from "react";
+import { useState, ChangeEvent, useCallback, useEffect } from "react";
 import {
   Box,
   Button,
   Typography,
-  Sheet,
   Tooltip,
   useTheme,
-  Textarea,
-} from "@mui/joy";
+  Paper,
+} from "@mui/material";
+
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
-import { Tag } from "./Tag.tsx";
-import { CharBucket } from "./CharBucket.tsx";
-
-const createBuckets = (text: string) => {
-  const words = text
-    .replace(/,/g, " ")
-    .split(/\s+/)
-    .filter((word) => word.trim() !== "");
-
-  const buckets: Record<number, string[]> = {};
-  words.forEach((word) => {
-    const length = word.length;
-    if (!buckets[length]) {
-      buckets[length] = [];
-    }
-    buckets[length].push(word);
-  });
-  return buckets;
-};
+import { Tag } from "./Tag";
+import { CharBucket } from "./CharBucket";
+import { TabsPanel } from "./TabsPanel";
 
 function App() {
   const theme = useTheme();
@@ -39,7 +23,8 @@ function App() {
   const [finalKeywordString, setFinalKeywordString] = useState("");
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [wordSoup, setWordSoup] = useState("");
-  const [charBuckets, setCharBuckets] = useState<Record<number, string[]>>([]);
+  const [charBuckets, setCharBuckets] = useState<Record<number, string[]>>({});
+  const [tagsToRework, setTagsToRework] = useState<string>("");
 
   const tempKeywordString = currentTags
     .filter((k) => k.trim() !== "")
@@ -55,6 +40,11 @@ function App() {
     },
     [currentTags]
   );
+
+  useEffect(() => {
+    const split = tagsToRework.split(",");
+    setCurrentTags(split);
+  }, [tagsToRework]);
 
   return (
     <Box
@@ -77,35 +67,18 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Typography level="h2" sx={{ m: 3, mb: 4, textAlign: "center" }}>
+        <Typography variant="h4" sx={{ m: 3, mb: 4, textAlign: "center" }}>
           Spoonflower Tag Planner
         </Typography>
-        <Box sx={{ width: "95%", m: 2 }}>
-          <Textarea
-            sx={{ minHeight: "70px" }}
-            placeholder="Paste your keyword ideas here"
-            value={wordSoup}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-              const value = e?.target.value.toLowerCase();
-              setWordSoup(value);
-            }}
-            onBlur={(e: FocusEvent<HTMLTextAreaElement>) => {
-              const newBuckets = createBuckets(e.target.value);
-              setCharBuckets(newBuckets);
-            }}
-            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-              const isEnter =
-                e.key === "Enter" || // Logical Enter key
-                e.code === "Enter" || // Physical Enter key
-                e.code === "NumpadEnter" || // Enter key on the numeric keypad
-                e.keyCode === 13; // Older browser fallback
 
-              if (isEnter) {
-                e.preventDefault(); // Prevent the default Enter behavior
-                e.currentTarget.blur(); // Blur the Textarea
-              }
-            }}
+        <Box sx={{ width: "95%", m: 2 }}>
+          <TabsPanel
+            wordSoup={wordSoup}
+            setWordSoup={setWordSoup}
+            setCharBuckets={setCharBuckets}
+            setTagsToRework={setTagsToRework}
           />
+
           <Box
             sx={{
               display: "flex",
@@ -116,6 +89,7 @@ function App() {
           >
             {Object.entries(charBuckets).map(([length, words]) => (
               <CharBucket
+                key={length}
                 length={length}
                 words={words}
                 currentTags={currentTags}
@@ -123,10 +97,12 @@ function App() {
             ))}
           </Box>
         </Box>
+
         <Box>
           <Typography sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
             Plan your optimized tags here
           </Typography>
+
           <Box
             sx={{
               display: "flex",
@@ -141,7 +117,7 @@ function App() {
             <Box sx={{ [theme.breakpoints.down("md")]: { mt: -1 } }}>
               {currentTags.slice(7).map((k, i) => (
                 <Tag
-                  key={i + 6}
+                  key={i + 7}
                   tag={k}
                   tagIndex={i + 7}
                   onChange={updateTags}
@@ -150,6 +126,7 @@ function App() {
             </Box>
           </Box>
         </Box>
+
         <Box sx={{ m: 4 }}>
           <Button
             variant="outlined"
@@ -159,11 +136,13 @@ function App() {
               setFinalKeywordString("");
               setCharBuckets({});
               setWordSoup("");
+              setTagsToRework("");
             }}
           >
             Reset
           </Button>
           <Button
+            variant="contained"
             disabled={
               !currentTags.some((k) => Boolean(k)) &&
               tempKeywordString.length <= 284
@@ -175,25 +154,27 @@ function App() {
             Done!
           </Button>
         </Box>
+
         {finalKeywordString && (
-          <Sheet
-            sx={(theme) => ({
+          <Paper
+            sx={{
               display: "flex",
               alignItems: "center",
               width: "95%",
-              background: theme.palette.neutral[200],
               padding: 2,
               borderRadius: "4px",
               justifyContent: "space-between",
+              backgroundColor: "action.hover",
               [theme.breakpoints.down("md")]: { width: "90%", mb: 6 },
-            })}
+            }}
           >
             <Box sx={{ mr: 1 }}>{finalKeywordString}</Box>
-            <Tooltip title="copy to clipboard">
+            <Tooltip title="Copy to clipboard">
               {copiedToClipboard ? (
                 <CheckIcon />
               ) : (
                 <ContentCopyIcon
+                  sx={{ cursor: "pointer" }}
                   onClick={() => {
                     if (finalKeywordString.trim() !== "") {
                       navigator.clipboard
@@ -209,7 +190,7 @@ function App() {
                 />
               )}
             </Tooltip>
-          </Sheet>
+          </Paper>
         )}
       </Box>
     </Box>
