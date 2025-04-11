@@ -42,8 +42,10 @@ function App() {
   );
 
   useEffect(() => {
-    const split = tagsToRework.split(",");
-    setCurrentTags(split);
+    if (tagsToRework) {
+      const split = tagsToRework.split(",");
+      setCurrentTags(split);
+    }
   }, [tagsToRework]);
 
   return (
@@ -98,7 +100,15 @@ function App() {
           </Box>
         </Box>
 
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            pl: 3,
+            pr: 3,
+          }}
+        >
           <Typography sx={{ fontWeight: "bold", mt: 1, mb: 1 }}>
             Plan your optimized tags here
           </Typography>

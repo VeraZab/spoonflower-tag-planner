@@ -18,15 +18,15 @@ function CustomTab(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
+      {value === index && <Box sx={{ p: 0, mt: 1 }}>{children}</Box>}
+    </Box>
   );
 }
 
@@ -95,7 +95,7 @@ export function TabsPanel({
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 1 }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -106,12 +106,12 @@ export function TabsPanel({
         </Tabs>
       </Box>
 
-      <CustomTab value={value} index={0}>
+      <CustomTab value={value} index={0} sx={{ p: 0 }}>
         <TextField
           multiline
           fullWidth
           minRows={3}
-          sx={{ minHeight: "70px" }}
+          sx={{ minHeight: "70px", p: 0 }}
           placeholder="Paste your keyword ideas here"
           value={wordSoup}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -142,7 +142,7 @@ export function TabsPanel({
           multiline
           fullWidth
           minRows={3}
-          sx={{ minHeight: "70px" }}
+          sx={{ minHeight: "70px", p: 0 }}
           placeholder="Paste your comma separated existing tags here"
           value={tempKeywordsToRework}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
