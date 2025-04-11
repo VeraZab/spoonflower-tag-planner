@@ -6,6 +6,7 @@ import {
   FocusEvent,
 } from "react";
 import { Tabs, Tab, Box, TextField } from "@mui/material";
+import { CopyPasteText } from "./CopyPasteText";
 
 // Tab panel content container
 interface TabPanelProps {
@@ -138,34 +139,42 @@ export function TabsPanel({
       </CustomTab>
 
       <CustomTab value={value} index={1}>
-        <TextField
-          multiline
-          fullWidth
-          minRows={3}
-          sx={{ minHeight: "70px", p: 0 }}
-          placeholder="Paste your comma separated existing tags here"
-          value={tempKeywordsToRework}
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-            const value = e.target.value.toLowerCase();
-            setTempKeywordsToRework(value);
-          }}
-          onBlur={() => {
-            setTempKeywordsToRework("");
-            setTagsToRework(tempKeywordsToRework);
-          }}
-          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-            const isEnter =
-              e.key === "Enter" ||
-              e.code === "Enter" ||
-              e.code === "NumpadEnter" ||
-              e.keyCode === 13;
+        <>
+          <TextField
+            multiline
+            fullWidth
+            minRows={3}
+            sx={{ minHeight: "70px", p: 0 }}
+            placeholder="Paste your comma separated existing tags here"
+            value={tempKeywordsToRework}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+              const value = e.target.value.toLowerCase();
+              setTempKeywordsToRework(value);
+            }}
+            onBlur={() => {
+              setTempKeywordsToRework("");
+              setTagsToRework(tempKeywordsToRework);
+            }}
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+              const isEnter =
+                e.key === "Enter" ||
+                e.code === "Enter" ||
+                e.code === "NumpadEnter" ||
+                e.keyCode === 13;
 
-            if (isEnter) {
-              e.preventDefault();
-              (e.target as HTMLTextAreaElement).blur();
+              if (isEnter) {
+                e.preventDefault();
+                (e.target as HTMLTextAreaElement).blur();
+              }
+            }}
+          />
+          <CopyPasteText
+            text={
+              "[...document.querySelectorAll('.tag-link')].map(t => t.innerText).join(', ')"
             }
-          }}
-        />
+            tooltipText="Copy to Spoonflower page listing console"
+          />
+        </>
       </CustomTab>
     </Box>
   );

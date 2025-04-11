@@ -1,16 +1,8 @@
 import "./App.css";
 import { useState, ChangeEvent, useCallback, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Tooltip,
-  useTheme,
-  Paper,
-} from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import CheckIcon from "@mui/icons-material/Check";
+import { CopyPasteText } from "./CopyPasteText";
 
 import { Tag } from "./Tag";
 import { CharBucket } from "./CharBucket";
@@ -21,7 +13,6 @@ function App() {
   const initialKeywords = new Array(13).fill("");
   const [currentTags, setCurrentTags] = useState<string[]>(initialKeywords);
   const [finalKeywordString, setFinalKeywordString] = useState("");
-  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [wordSoup, setWordSoup] = useState("");
   const [charBuckets, setCharBuckets] = useState<Record<number, string[]>>({});
   const [tagsToRework, setTagsToRework] = useState<string>("");
@@ -165,43 +156,7 @@ function App() {
           </Button>
         </Box>
 
-        {finalKeywordString && (
-          <Paper
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: "95%",
-              padding: 2,
-              borderRadius: "4px",
-              justifyContent: "space-between",
-              backgroundColor: "action.hover",
-              [theme.breakpoints.down("md")]: { width: "90%", mb: 6 },
-            }}
-          >
-            <Box sx={{ mr: 1 }}>{finalKeywordString}</Box>
-            <Tooltip title="Copy to clipboard">
-              {copiedToClipboard ? (
-                <CheckIcon />
-              ) : (
-                <ContentCopyIcon
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => {
-                    if (finalKeywordString.trim() !== "") {
-                      navigator.clipboard
-                        .writeText(finalKeywordString)
-                        .then(() => {
-                          setCopiedToClipboard(true);
-                          setTimeout(() => {
-                            setCopiedToClipboard(false);
-                          }, 2000);
-                        });
-                    }
-                  }}
-                />
-              )}
-            </Tooltip>
-          </Paper>
-        )}
+        {finalKeywordString && <CopyPasteText text={finalKeywordString} />}
       </Box>
     </Box>
   );
