@@ -169,9 +169,12 @@ export function TabsPanel({
             }}
           />
           <CopyPasteText
-            text={
-              "[...document.querySelectorAll('.tag-link')].map(t => t.innerText).join(', ')"
-            }
+            text={`[...Array.from(document.querySelectorAll('h2'))
+            .find(h => h.textContent.trim().toLowerCase().includes('explore more tags'))
+            .closest('section')
+            .querySelectorAll("a[aria-label^='Shop for']")]
+            .map(t => t.innerText)
+            .join(', ')`}
             tooltipText="Copy to Spoonflower page listing console"
           />
         </>
