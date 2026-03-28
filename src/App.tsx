@@ -40,16 +40,53 @@ function App() {
   }, [tagsToRework]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        p: 3,
-        pt: 0,
-      }}
-    >
+    <>
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1100,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          backgroundColor: "#FF69B4",
+          color: "#fff",
+          py: 1.5,
+          px: 2,
+          fontWeight: 600,
+          fontSize: "0.95rem",
+          letterSpacing: "0.02em",
+        }}
+      >
+        🎉 Now available as a{" "}
+        <Box
+          component="a"
+          href="https://youtu.be/bEongVYbuJs"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            color: "#fff",
+            textDecoration: "underline",
+            textUnderlineOffset: "4px",
+            ml: 0.5,
+            "&:hover": { color: "#fff" },
+          }}
+        >
+          Chrome Extension
+        </Box>
+        {" "}✨
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          p: 3,
+          pt: 0,
+        }}
+      >
       <Box
         sx={{
           width: "900px",
@@ -159,6 +196,7 @@ function App() {
         {finalKeywordString && <CopyPasteText text={finalKeywordString} />}
       </Box>
     </Box>
+    </>
   );
 }
 
